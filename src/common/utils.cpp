@@ -9,7 +9,7 @@ std::vector<float> crossProduct(const std::vector<float>& v1, const std::vector<
      * result in res. v1, v2, and res should be vectors with 3 elements, which
      * correspond to the vector components [x, y, z].
      **/
-     res.push_back( v1[1] * v2[2] - v1[2] * v2[1] );
+     res.push_back(v1[1] * v2[2] - v1[2] * v2[1]);
      res.push_back(v1[2] * v2[0] - v1[0] * v2[2]);
      res.push_back(v1[0] * v2[1] - v1[1] * v2[0]);
 
@@ -19,8 +19,8 @@ std::vector<float> crossProduct(const std::vector<float>& v1, const std::vector<
 
 int findMinDist(const std::vector<float>& ranges)
 {
-    int min_idx;
-    float min_distance = std::numeric_limits<float>::max();;
+    int min_idx =-1;
+    float min_distance = std::numeric_limits<float>::max();
 
     /**
      * TODO: (P1.2) Return the index of the shortest ray in the Lidar scan.

@@ -7,7 +7,9 @@
 #include <wall_follower/common/utils.h>
 
 bool ctrl_c_pressed;
+
 void ctrlc(int)
+
 {
     ctrl_c_pressed = true;
 }
@@ -29,6 +31,8 @@ int main(int argc, const char *argv[])
      */
     
      float desiredDistance  = 0.3048;
+     float speed = 0.2;
+     float Kp = 1.0;
 
     while (true) {
         // This function gets the Lidar scan data.
@@ -41,6 +45,11 @@ int main(int argc, const char *argv[])
          */
          int minIndex = findMinDist(ranges);
 
+         if (minIndex == -1) {
+            robot.stop();
+            continue;
+         }
+
         // Get distance and angle of closest ray.
         float minDistance = ranges[minIndex];
         float minTheta = thetas[minIndex];
@@ -52,28 +61,33 @@ int main(int argc, const char *argv[])
             0
         };
         std::vector<float> forward = {
-    1,
     0,
-    0
+    0,
+    1
 };
         std::vector<float> wallDirection =
             crossProduct(wallNormal, forward);
 
         // Error from desired wall distance.
         float distanceError = minDistance - desiredDistance;
+        float correction = Kp * distanceError;
 
         // Move along the wall while correcting distance.
-        float vx = 0.2;
-        float vy = wallDirection[1] * 0.2;
-        float wz = distanceError;
+        float vx = wallDirection[0] * speed;
+        float vy = wallDirection[1] * speed;
 
-        robot.drive(vx, vy, wz);
+        vx += wallNormal[0] * correction;
+        vy += wallNormal[1] * correction;
+
+        robot.drive(vx, vy, 0);
 
 
 
 
-        if (ctrl_c_pressed) break;
+        if (ctrl_c_pressed){
+             break;
     }
+}
 
     // Stop the robot.
     robot.stop();
